@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getBanks } from "@/app/actions/transfer/get-bank.action";
 import { bankNameEnquiry } from "@/app/actions/transfer/bank-nameenquiry";
@@ -11,6 +11,7 @@ import TransferPinModal from "../components/TransferPinModal";
 import ConfirmTransferModal from "../components/ConfirmTransferModal";
 import { toast } from "react-toastify";
 import { bankTransfer } from "@/app/actions/transfer/bank-transfer.acrion";
+import { getBalance } from "@/app/actions/dashboard/get-balance.action";
 
 
 
@@ -37,11 +38,29 @@ export default function BankTransferPage() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
+  const [balance, setBalance] = useState("•••••••");
+  const hasFetched = useRef(false);
+
 
   useEffect(() => {
     const load = async () => {
       const res = await getBanks();
       setBanks(res.data || []);
+    };
+
+    load();
+  }, [])
+
+
+
+  useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
+    const load = async () => {
+      const res = await getBalance();
+      console.log("BALANCE FROMM WALLET", res);
+      setBalance(res?.data?.balance ?? 0);
     };
 
     load();
@@ -125,6 +144,22 @@ export default function BankTransferPage() {
 
         setSuccessMessage(res.message);
         setShowSuccessModal(true);
+
+        try {
+          const bal = await getBalance();
+          setBalance(bal?.data?.balance ?? 0);
+        } catch { }
+
+        setAccount("");
+        setAccountNumber("");
+        setBankCode("");
+        setBankName("");
+        setFullName("");
+        SetNameEquiry("");
+        setNarration("");
+        setTransferAmount(null);
+        setErrors("");
+
         return;
       }
 
@@ -200,10 +235,10 @@ export default function BankTransferPage() {
             <div className="rounded-2xl bg-gradient-to-r from-yellow-600 to-primary text-white px-8 py-6 flex items-center justify-between">
               <div>
                 <p className="text-sm opacity-90">
-                  Get Up to ₦100 Cashback!
+                  Transfer to Other Banks
                 </p>
                 <p className="font-semibold mt-1">
-                  Top up ₦100 – ₦1,000 & get cashback
+                  Use your balance to send money instantly
                 </p>
 
                 <button className="mt-4 bg-black text-white text-sm px-4 py-2 rounded-lg">
@@ -212,7 +247,7 @@ export default function BankTransferPage() {
               </div>
 
               <div className="text-4xl font-bold">
-                ₦100
+                ₦{balance.toLocaleString()}
               </div>
             </div>
 

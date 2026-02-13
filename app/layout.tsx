@@ -4,6 +4,8 @@ import "./globals.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Providers from "./providers";
+import UserProvider from "@/providers/UserProvider";
+
 
 
 const geistSans = Geist({
@@ -32,8 +34,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          {children}
-        <ToastContainer position="top-right" />
+          <UserProvider >
+
+            {children}
+          </UserProvider>
+
+          <ToastContainer position="top-right" />
         </Providers>
 
       </body>

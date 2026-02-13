@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Loader from "@/components/Loader";
 import { verifyBankAccount } from "@/lib/api/transfer/verifyBank";
@@ -11,6 +11,7 @@ import { walletTransfers } from "@/app/actions/wallet-transfer/transfer.action";
 import ConfirmTransferModal from "../components/ConfirmTransferModal";
 import TransferPinModal from "../components/TransferPinModal";
 import SuccessModal from "@/components/SuccessModal";
+import { getBalance } from "@/app/actions/dashboard/get-balance.action";
 
 
 
@@ -33,7 +34,22 @@ export default function WalletTransferPage() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
 
+  const [balance, setBalance] = useState("•••••••");
+  const hasFetched = useRef(false); 
 
+
+   useEffect(() => {
+      if (hasFetched.current) return;
+      hasFetched.current = true;
+  
+      const load = async () => {
+        const res = await getBalance();
+        console.log("BALANCE FROMM WALLET", res);
+        setBalance(res?.data?.balance ?? 0);
+      };
+  
+      load();
+    }, [])
 
 
   async function handleNameEnquiry(e: React.FormEvent) {
@@ -65,12 +81,8 @@ export default function WalletTransferPage() {
         const name = `${first_name ?? ""} ${last_name ?? ""}`.trim();
         setFullName(name);
         setAccountNumber(account_number);
-
         toast.success(res.message);
-
         setShowConfirmModal(true);
-
-
         return;
       }
 
@@ -114,14 +126,11 @@ export default function WalletTransferPage() {
       setLoading(false);
     }
 
-
-
   }
 
 
   async function handleTransfer(pin: string) {
 
-    // example payload
     const payload = {
       amount: transferAmount,
       destination_account: accountNumber,
@@ -158,17 +167,11 @@ export default function WalletTransferPage() {
     } finally {
       setLoading(false)
     }
-
-    // call transfer API here
   }
 
 
   return (
     <>
-
-
-
-
       <ConfirmTransferModal
         isOpen={showConfirmModal}
         fullName={fullName}
@@ -235,10 +238,10 @@ export default function WalletTransferPage() {
             <div className="rounded-2xl bg-gradient-to-r from-yellow-600 to-primary text-white px-8 py-6 flex items-center justify-between">
               <div>
                 <p className="text-sm opacity-90">
-                  Get Up to ₦100 Cashback!
+                  Transfer to Wallet
                 </p>
                 <p className="font-semibold mt-1">
-                  Top up ₦100 – ₦1,000 & get cashback
+                  Use your balance to send money instantly
                 </p>
 
                 <button className="mt-4 bg-black text-white text-sm px-4 py-2 rounded-lg">
@@ -247,7 +250,7 @@ export default function WalletTransferPage() {
               </div>
 
               <div className="text-4xl font-bold">
-                ₦100
+                ₦{balance.toLocaleString()}
               </div>
             </div>
 

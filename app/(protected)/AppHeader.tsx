@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import Logout from "./Logout";
+import Link from "next/link";
 
 export default function AppHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -71,9 +72,9 @@ export default function AppHeader() {
               }`}
             >
               <div className="py-2 text-sm text-primary">
-                <button className="cursor-pointer w-full text-left px-4 py-3 hover:bg-[#F7F7F7]">
+                <Link href="/profile" className="cursor-pointer w-full text-left px-4 py-3 hover:bg-[#F7F7F7]">
                   Profile
-                </button>
+                </Link>
 
                 <button className="cursor-pointer w-full text-left px-4 py-3 hover:bg-[#F7F7F7]">
                   Settings

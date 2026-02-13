@@ -21,7 +21,7 @@ export default function ConfirmTransferModal({
   onConfirm,
 }: ConfirmTransferModalProps) {
 
-  const MIN_TRANSFER = 10; // ✅ single source
+  const MIN_TRANSFER = 10;
 
   const [rawAmount, setRawAmount] = useState("");
   const [amountError, setAmountError] = useState("");
@@ -80,9 +80,10 @@ export default function ConfirmTransferModal({
   };
 
   /* ---------------- BUTTON LOGIC (SINGLE SOURCE) ---------------- */
-  const parsedAmount = parseAmount(rawAmount);
-  const errorMessage = validate(parsedAmount);
-  const isAmountValid = rawAmount !== "" && !errorMessage;
+const parsedAmount = parseAmount(rawAmount);
+const errorMessage = rawAmount ? validate(parsedAmount) : "";
+const isAmountValid = rawAmount !== "" && !errorMessage;
+
 
   /* ---------------- CONFIRM ---------------- */
   const handleConfirm = () => {

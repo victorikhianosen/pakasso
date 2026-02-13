@@ -1,24 +1,140 @@
-import React from 'react'
+"use client";
+
+import React, { useEffect, useRef, useState, useMemo } from "react";
+import { getTransactions } from "@/app/actions/dashboard/get-transactions.action";
+import { ArrowUpRight, ArrowDownLeft } from "lucide-react";
 
 export default function RecentTransaction() {
-  return (
-        <div className="bg-white rounded-3xl p-7">
-        <h3 className="font-semibold mb-6 text-primary">Recent Transactions</h3>
+  const hasFetched = useRef(false);
 
-        <div className="space-y-4">
-          <div className="flex justify-between bg-[#F7F7F7] p-4 rounded-xl">
-            <span>Transfer to John Doe</span>
-            <span className="text-red-500 font-semibold">− ₦5,000</span>
-          </div>
-          <div className="flex justify-between bg-[#F7F7F7] p-4 rounded-xl">
-            <span>Salary credit</span>
-            <span className="text-green-600 font-semibold">+ ₦150,000</span>
-          </div>
-          <div className="flex justify-between bg-[#F7F7F7] p-4 rounded-xl">
-            <span>Airtime purchase</span>
-            <span className="text-red-500 font-semibold">− ₦2,000</span>
-          </div>
-        </div>
+  const [transactions, setTransactions] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  /* ---------------- Fetch ---------------- */
+  useEffect(() => {
+    if (hasFetched.current) return;
+    hasFetched.current = true;
+
+    const load = async () => {
+      try {
+        const res = await getTransactions();
+        const list = res?.data?.transactions ?? [];
+
+        setTransactions(list);
+      } catch (err) {
+        console.error(err);
+        setTransactions([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+  }, []);
+
+  /* ---------------- Stats (frontend only) ---------------- */
+  const stats = useMemo(() => {
+    if (!transactions.length) return null;
+
+    const amounts = transactions.map((t) => Number(t.amount));
+
+    return {
+      highest: Math.max(...amounts),
+      lowest: Math.min(...amounts),
+      total: amounts.reduce((a, b) => a + b, 0),
+      count: transactions.length,
+    };
+  }, [transactions]);
+
+  /* ---------------- Title logic ---------------- */
+  const getTitle = (t) => {
+    if (t.transfer_type === "inward_transfer") {
+      return `Transfer From ${t.sender_name}`;
+    }
+
+    if (t.transaction_type === "debit") {
+      return `Transfer To ${t.recipient_name}`;
+    }
+
+    return t.recipient_name || "Transaction";
+  };
+
+  /* ---------------- UI ---------------- */
+  return (
+    <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
+      {/* Header */}
+      <h3 className="font-semibold text-lg mb-5">Recent Transactions</h3>
+
+      {/* ---------------- Stats Cards ---------------- */}
+    
+
+      {/* ---------------- List ---------------- */}
+      <div className="space-y-3">
+        {loading &&
+          [...Array(4)].map((_, i) => (
+            <div key={i} className="h-14 bg-gray-100 rounded-xl animate-pulse" />
+          ))}
+
+        {!loading && transactions.length === 0 && (
+          <p className="text-sm text-gray-400 text-center py-6">
+            No transactions yet
+          </p>
+        )}
+
+        {transactions.slice(0, 4).map((t, index) => {
+          const isDebit = t.transaction_type === "debit";
+
+          return (
+            <div
+              key={index}
+              className="flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition rounded-xl p-4"
+            >
+              <div className="flex items-center gap-3 min-w-0">
+                <div
+                  className={`p-2 rounded-xl ${
+                    isDebit
+                      ? "bg-red-100 text-red-600"
+                      : "bg-green-100 text-green-600"
+                  }`}
+                >
+                  {isDebit ? (
+                    <ArrowUpRight size={18} />
+                  ) : (
+                    <ArrowDownLeft size={18} />
+                  )}
+                </div>
+
+                <div>
+                  <p className="font-medium text-sm truncate">
+                    {getTitle(t)}
+                  </p>
+                  <p className="text-xs text-gray-400">{t.created_at}</p>
+                </div>
+              </div>
+
+              <p
+                className={`font-semibold text-sm ${
+                  isDebit ? "text-red-500" : "text-green-600"
+                }`}
+              >
+                {isDebit ? "−" : "+"} ₦{t.amount}
+              </p>
+            </div>
+          );
+        })}
       </div>
-  )
+    </div>
+  );
+}
+
+/* ---------------- Small reusable Stat card ---------------- */
+function Stat({ label, value, isMoney = true }) {
+  return (
+    <div className="bg-gray-50 rounded-xl p-3 text-center">
+      <p className="text-xs text-gray-400">{label}</p>
+      <p className="font-semibold text-sm mt-1">
+        {isMoney ? `₦${Number(value).toLocaleString()}` : value}
+      </p>
+    </div>
+  );
 }

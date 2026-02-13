@@ -1,58 +1,50 @@
-"use client"
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 import QuickAction from "./QuickAction";
 import BalanceCard from "./BalanceCard";
 import AccountLimit from "./AccountLimit";
 import RecentTransaction from "./RecentTransaction";
 import { getBalance } from "@/app/actions/dashboard/get-balance.action";
+import { getTransactions } from "@/app/actions/dashboard/get-transactions.action";
 
 export default function DashboardPage() {
-  const [balanceVisible, setBalanceVisible] = useState(true);
-  const [balance, setBalance] = useState("•••••••");
-  const hasFetched = useRef(false); 
+  const hasFetched = useRef(false);
 
-  useEffect(() => {
-    const saved = localStorage.getItem("balanceVisible");
-    if (saved !== null) {
-      setBalanceVisible(saved !== "false");
-    }
-  }, []);
-
-
-
+  const [balance, setBalance] = useState(0);
+  const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
     if (hasFetched.current) return;
     hasFetched.current = true;
 
     const load = async () => {
-      const res = await getBalance();
-      console.log("GET BALANCE", res);
-      setBalance(res?.data?.balance ?? 0);
+      try {
+        const [balRes, trxRes] = await Promise.all([
+          getBalance(),
+          getTransactions(),
+        ]);
+
+        setBalance(balRes?.data?.balance ?? 0);
+        setTransactions(trxRes?.data?.transactions ?? []);
+      } catch (e) {
+        console.error(e);
+      }
     };
 
     load();
-  }, [])
+  }, []);
 
   return (
     <div className="space-y-8">
-
-      {/* BALANCE CARD */}
-
-      <BalanceCard balance={balance}/>
-
-      {/* QUICK ACTIONS */}
+      <BalanceCard balance={balance} />
 
       <QuickAction />
 
-      {/* LIMITS + ACCOUNTS */}
+      {/* ✅ pass transactions */}
+      <AccountLimit transactions={transactions} />
 
-      <AccountLimit />
-
-      {/* TRANSACTIONS */}
-
-      <RecentTransaction />
-
+      <RecentTransaction transactions={transactions} />
     </div>
   );
 }
