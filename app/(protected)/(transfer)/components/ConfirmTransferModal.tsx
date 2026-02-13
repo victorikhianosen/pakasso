@@ -86,11 +86,11 @@ const isAmountValid = rawAmount !== "" && !errorMessage;
 
 
   /* ---------------- CONFIRM ---------------- */
-  const handleConfirm = () => {
-    if (!isAmountValid) return;
+ const handleConfirm = () => {
+  if (!isAmountValid) return;
 
-    onConfirm(parsedAmount, narration?.trim() || null);
-  };
+  onConfirm(parsedAmount, narration?.trim() || undefined);
+};
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">

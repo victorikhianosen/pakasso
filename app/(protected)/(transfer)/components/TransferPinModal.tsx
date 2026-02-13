@@ -1,11 +1,10 @@
 "use client";
 
-
 import { useRef, useState } from "react";
 
 type TransferPinModalProps = {
   isOpen: boolean;
-  error?: string; // ✅ receives error
+  error?: string;
   onCancel: () => void;
   onConfirm: (pin: string) => void;
 };
@@ -23,18 +22,18 @@ export default function TransferPinModal({
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 px-4">
       <div className="bg-white rounded-2xl w-full max-w-lg p-8">
-
         <h3 className="text-lg font-semibold text-primary mb-6 pb-14">
           Confirm Transaction PIN
         </h3>
 
         <PinInput value={pin} onChange={setPin} />
 
-{error && (
+        {error && (
           <p className="text-center text-red-600 text-sm mt-3">
             {error}
           </p>
         )}
+
         <div className="flex gap-3 pt-12">
           <button
             type="button"
@@ -49,9 +48,11 @@ export default function TransferPinModal({
             disabled={pin.length !== 4}
             onClick={() => onConfirm(pin)}
             className={`w-1/2 h-12 rounded-xl font-semibold
-              ${pin.length !== 4
-                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-                : "bg-primary text-white cursor-pointer"}`}
+              ${
+                pin.length !== 4
+                  ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  : "bg-primary text-white cursor-pointer"
+              }`}
           >
             Confirm
           </button>
