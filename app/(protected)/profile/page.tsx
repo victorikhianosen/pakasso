@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 import { useUser } from "@/context/UserContext";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -11,6 +13,7 @@ import {
   Shield,
   ChevronRight,
   Camera,
+  ArrowLeft,
 } from "lucide-react";
 
 export default function ProfilePage() {
@@ -38,7 +41,7 @@ export default function ProfilePage() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <ProfileDetails user={displayUser} />
-        <ProfileSecurity />
+        {/* <ProfileSecurity /> */}
       </div>
     </div>
   );
@@ -48,8 +51,19 @@ export default function ProfilePage() {
    MODERN HEADER (glass + big avatar)
 ========================================================= */
 function ProfileHeader({ user }) {
+    const router = useRouter();
+
   return (
-    <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-[#1f272f] text-white p-10 shadow-xl">
+   <>
+   <button
+        onClick={() => router.back()}
+        className="flex cursor-pointer items-center gap-2 mb-4 text-sm font-medium text-primary hover:-translate-x-1 transition"
+      >
+        <ArrowLeft size={18} />
+        Back
+      </button>
+      
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-[#1f272f] text-white p-10 shadow-xl">
 
       <div className="flex flex-col md:flex-row items-center gap-6">
 
@@ -84,6 +98,7 @@ function ProfileHeader({ user }) {
         </div>
       </div>
     </div>
+   </>
   );
 }
 

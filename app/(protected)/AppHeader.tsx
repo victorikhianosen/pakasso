@@ -76,9 +76,9 @@ export default function AppHeader() {
                   Profile
                 </Link>
 
-                <button className="cursor-pointer w-full text-left px-4 py-3 hover:bg-[#F7F7F7]">
+                {/* <button className="cursor-pointer w-full text-left px-4 py-3 hover:bg-[#F7F7F7]">
                   Settings
-                </button>
+                </button> */}
 
                 <div className="my-1 h-px bg-gray-100"></div>
 
