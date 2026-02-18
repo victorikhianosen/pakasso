@@ -70,11 +70,11 @@ export default function RecentTransaction({
           return (
             <div
               key={index}
-              className="flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition rounded-xl p-4"
+              className="w-full flex items-center justify-between bg-gray-50 hover:bg-gray-100 transition rounded-xl p-4"
             >
-              <div className="flex items-center gap-3 min-w-0">
+              <div className="flex items-center gap-3 min-w-0 w-[80%]">
                 <div
-                  className={`p-2 rounded-xl ${
+                  className={`p-2 rounded-xl  ${
                     isDebit
                       ? "bg-red-100 text-red-600"
                       : "bg-green-100 text-green-600"
@@ -87,7 +87,7 @@ export default function RecentTransaction({
                   )}
                 </div>
 
-                <div>
+                <div className="overflow-hidden">
                   <p className="font-medium text-sm truncate">
                     {getTitle(t)}
                   </p>
@@ -96,7 +96,7 @@ export default function RecentTransaction({
               </div>
 
               <p
-                className={`font-semibold text-sm ${
+                className={`flex font-semibold text-sm w-[20%] justify-end ${
                   isDebit ? "text-red-500" : "text-green-600"
                 }`}
               >

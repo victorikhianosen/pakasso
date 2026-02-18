@@ -1,6 +1,7 @@
 "use client";
 
 import { useUser } from "@/context/UserContext";
+import { Eye, EyeClosed, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -76,7 +77,7 @@ export default function BalanceCard({ balance }: { balance: number }) {
             </h1>
 
             <button onClick={toggleBalance} className="opacity-70 hover:opacity-100 text-lg">
-              👁
+              {balanceVisible ? <EyeOff size={30}/> : <Eye size={30}/>}
             </button>
           </div>
 
@@ -89,10 +90,10 @@ export default function BalanceCard({ balance }: { balance: number }) {
         </div>
 
         {/* RIGHT */}
-        <div className="relative backdrop-blur-md rounded-2xl p-6 min-w-[260px] space-y-4">
+        <div className="relative backdrop-blur-md rounded-2xl lg:p-6 p-0 min-w-65 space-y-4">
           <button
             onClick={copyAccount}
-            className="absolute top-4 right-4 text-xs bg-white/20 px-3 py-1.5 rounded-lg"
+            className="absolute lg:top-0 top-3 lg:right-4 right-0 text-xs bg-white/20 px-3 py-1.5 rounded-lg"
           >
             Copy
           </button>
