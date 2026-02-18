@@ -9,7 +9,7 @@ type TransferPinModalProps = {
   onConfirm: (pin: string) => void;
 };
 
-export default function TransferPinModal({
+export default function PurchasePinModal({
   isOpen,
   error,
   onCancel,

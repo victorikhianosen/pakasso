@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+
 import Loader from "@/components/Loader";
 import SuccessModal from "@/components/SuccessModal";
 import TransferPinModal from "../components/PurchasePinModal";
@@ -152,22 +154,24 @@ export default function DataPage() {
                 {/* NETWORK */}
                 <div className="space-y-1">
                   <label className="text-sm font-medium text-primary">Mobile Operator</label>
-                  <select
-                    className="w-full h-12 px-4 rounded-xl border border-border bg-background
-  focus:outline-none focus:ring-2 focus:ring-secondary"
-                    value={network}
-                    onChange={(e) => {
-                      const selected = DataProviders.find((d) => d.value === e.target.value);
-                      setNetwork(selected?.value || "");
-                    }}>
-                    <option value={""}>Select Mobile Operator</option>
-
+                  <div className="flex gap-7.5 mt-2">
                     {DataProviders.map((provider) => (
-                      <option key={provider.value} value={provider.value}>
-                        {provider.label}
-                      </option>
+                      <button
+                        key={provider.value}
+                        onClick={() => setNetwork(provider.value)}
+                        className={`flex items-center gap-2 text-sm font-medium text-primary hover:opacity-80 cursor-pointer w-fit ${
+                          network === provider.value ? "bg-gray-100" : ""
+                        }`}>
+                        <Image
+                          src={provider.image}
+                          alt={provider.label}
+                          width={50}
+                          height={50}
+                          className={`${network === provider.value ? "opacity-100 scale-110" : "opacity-50"}`}
+                        />
+                      </button>
                     ))}
-                  </select>
+                  </div>
                 </div>
 
                 {/* PHONE NUMBER */}
@@ -178,7 +182,7 @@ export default function DataPage() {
                     maxLength={11}
                     onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ""))}
                     placeholder="Enter 11-digit phone number"
-                    className="w-full h-12 px-4 rounded-xl border border-border
+                    className="w-full h-12 px-4 rounded-xl border border-border mt-2
                 focus:outline-none focus:ring-2 focus:ring-secondary"
                   />
                   {errors && <p className="text-red-600 text-base">{errors}</p>}

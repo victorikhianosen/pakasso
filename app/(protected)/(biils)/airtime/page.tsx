@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+
 import Loader from "@/components/Loader";
 import SuccessModal from "@/components/SuccessModal";
-import TransferPinModal from "../components/PurchasePinModal";
+import PurchasePinModal from "../components/PurchasePinModal";
 import { toast } from "react-toastify";
 import { getBalance } from "@/app/actions/dashboard/get-balance.action";
 import { buyAirtime } from "@/app/actions/bills/airtime/buy-airtime.action";
@@ -48,11 +50,17 @@ export default function AirtimePage() {
   }, []);
 
   async function handleTransfer(pin: string) {
+    if (!airtimeAmount || airtimeAmount < 100) {
+    toast.error("Amount must be at least 100");
+    return;
+  }
+
     const payload = {
       amount: airtimeAmount,
       phone_number: phoneNumber,
       network_provider: network,
       transaction_pin: pin,
+      platform: "web"
     };
 
     console.log("AIRTIME PAYLOAD", payload);
@@ -63,9 +71,8 @@ export default function AirtimePage() {
       const res = await buyAirtime(payload);
       console.log("AIRTIME RESPONSE", res);
 
-      if (res.responseCode === "000") {
+      if (res.responseCode === "000" && res.status === "success") {
         setShowPinModal(false);
-
         setSuccessMessage(res.message);
         setShowSuccessModal(true);
 
@@ -91,11 +98,13 @@ export default function AirtimePage() {
   const isValid = network.length > 0 && phoneNumber.length === 11 && airtimeAmount !== null;
   return (
     <>
-      <TransferPinModal
+      <PurchasePinModal
         isOpen={showPinModal}
         onCancel={() => {
           setShowPinModal(false);
           setAirtimeAmount(null);
+          setPhoneNumber("");
+          setNetwork("");
         }}
         onConfirm={(pin) => handleTransfer(pin)}
       />
@@ -150,23 +159,25 @@ export default function AirtimePage() {
               <div className="space-y-5">
                 {/* NETWORK */}
                 <div className="space-y-1">
-                  <label className="text-sm font-medium text-primary">Mobile Operator</label>
-                  <select
-                    className="w-full h-12 px-4 rounded-xl border border-border bg-background
-  focus:outline-none focus:ring-2 focus:ring-secondary"
-                    value={network}
-                    onChange={(e) => {
-                      const selected = airtimeProviders.find((a) => a.value === e.target.value);
-                      setNetwork(selected?.value || "");
-                    }}>
-                    <option value={""}>Select Mobile Operator</option>
-
+                  <label className="text-sm font-medium text-primary ">Mobile Operator</label>
+                  <div className="flex gap-7.5 mt-2">
                     {airtimeProviders.map((provider) => (
-                      <option key={provider.value} value={provider.value}>
-                        {provider.label}
-                      </option>
+                      <button
+                        key={provider.value}
+                        onClick={() => setNetwork(provider.value)}
+                        className={`flex items-center gap-2 text-sm font-medium text-primary hover:opacity-80 cursor-pointer w-fit ${
+                          network === provider.value ? "bg-gray-100" : ""
+                        }`}>
+                        <Image
+                          src={provider.image}
+                          alt={provider.label}
+                          width={50}
+                          height={50}
+                          className={`${network === provider.value ? "opacity-100 scale-110" : "opacity-50"}`}
+                        />
+                      </button>
                     ))}
-                  </select>
+                  </div>
                 </div>
 
                 {/* PHONE NUMBER */}
@@ -177,7 +188,7 @@ export default function AirtimePage() {
                     maxLength={11}
                     onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, ""))}
                     placeholder="Enter 11-digit phone number"
-                    className="w-full h-12 px-4 rounded-xl border border-border
+                    className="w-full h-12 px-4 rounded-xl border border-border mt-2
                 focus:outline-none focus:ring-2 focus:ring-secondary"
                   />
                   {errors && <p className="text-red-600 text-base">{errors}</p>}
@@ -185,12 +196,12 @@ export default function AirtimePage() {
 
                 {/* AMOUNT */}
                 <div className="space-y-1">
-                  <label className="text-sm font-medium text-primary">Amount</label>
+                  <label className="text-sm font-medium text-primary ">Amount</label>
                   <input
                     value={airtimeAmount || ""}
                     onChange={(e) => setAirtimeAmount(Number(e.target.value.replace(/\D/g, "")))}
                     placeholder="Enter amount"
-                    className="w-full h-12 px-4 rounded-xl border border-border
+                    className="w-full h-12 px-4 rounded-xl border border-border mt-2
                 focus:outline-none focus:ring-2 focus:ring-secondary"
                   />
                   {errors && <p className="text-red-600 text-base">{errors}</p>}
