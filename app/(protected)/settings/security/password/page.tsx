@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Lock, Eye, EyeOff } from "lucide-react";
-import { changePassword } from "@/app/actions/settings/change-password.action";
+import { changePassword } from "@/app/actions/settings/security/change-password.action";
 import Loader from "@/components/Loader";
 
 export default function ChangePassword() {

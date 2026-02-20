@@ -1,19 +1,13 @@
 "use client";
 
 import { useUser } from "@/context/UserContext";
-import { Eye, EyeClosed, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { User } from "@/types/user.types";
 
-/* ✅ user shape */
-type User = {
-  first_name?: string;
-  last_name?: string;
-  accountno?: string;
-  balance?: number;
-  currency?: string;
-};
+
 
 export default function BalanceCard({ balance }: { balance: number }) {
   const { user } = useUser();
