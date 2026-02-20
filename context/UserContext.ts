@@ -1,9 +1,10 @@
 "use client";
 
 import { createContext, useContext } from "react";
+import { User } from "@/types/user.types";
 
 export interface UserContextType {
-  user: any;
+  user: User;
   loading: boolean;
   refreshUser: () => Promise<void>;
 }

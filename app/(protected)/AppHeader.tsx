@@ -57,16 +57,25 @@ export default function AppHeader() {
                   : "opacity-0 scale-95 pointer-events-none"
               }`}>
               <div className="py-2 text-sm text-primary w-full">
-                <Link
-                  href="/profile">
-                  <button className="rounded-2xl cursor-pointer w-full text-left px-4 py-3 hover:bg-[#F7F7F7] border-b border-gray-200">
-                    Profile
+                <Link href="/settings">
+                  <button
+                    className="rounded-2xl cursor-pointer w-full text-left px-4 py-3 hover:bg-[#F7F7F7] border-b border-gray-200"
+                    onClick={() => {
+                      setMenuOpen(false);
+                    }}>
+                    Settings
                   </button>
                 </Link>
 
-                {/* <button className="cursor-pointer w-full text-left px-4 py-3 hover:bg-[#F7F7F7]">
-                  Settings
-                </button> */}
+                <Link href="/settings/profile/view-profile">
+                  <button
+                    className="rounded-2xl cursor-pointer w-full text-left px-4 py-3 hover:bg-[#F7F7F7] border-b border-gray-200"
+                    onClick={() => {
+                      setMenuOpen(false);
+                    }}>
+                    Profile
+                  </button>
+                </Link>
 
                 <Logout />
               </div>
