@@ -81,9 +81,7 @@ export default function BankTransferPage() {
         setAccountNumber(account_number);
         setBankName(bank_name);
         SetNameEquiry(name_enquiry_ref);
-
         toast.success(res.message);
-
         setShowConfirmModal(true);
         return;
       }
