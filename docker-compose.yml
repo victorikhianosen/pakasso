@@ -7,12 +7,3 @@ services:
       - "3006:3006"
     env_file:
       - .env
-
-# services:
-#   app:
-#     build: .
-#     container_name: pakasso_internetbanking
-#     ports:
-#       - "3006:3006"
-#     env_file:
-#       - .env
