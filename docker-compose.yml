@@ -1,19 +1,17 @@
 services:
   app:
-    build: .
+    image: ghcr.io/victorikhianosen/pakasso-internetbanking:latest
     container_name: pakasso_internetbanking
+    restart: always
     ports:
       - "3006:3006"
     env_file:
       - .env
 
-
 # services:
 #   app:
-#     build .
-#     # image: ghcr.io/victorikhianosen/pakasso-internetbanking:2026-02-21-00-26
+#     build: .
 #     container_name: pakasso_internetbanking
-#     restart: always
 #     ports:
 #       - "3006:3006"
 #     env_file:
