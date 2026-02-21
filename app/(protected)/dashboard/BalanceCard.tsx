@@ -9,7 +9,7 @@ import { User } from "@/types/user.types";
 
 
 
-export default function BalanceCard({ balance }: { balance: number }) {
+export default function BalanceCard({ balance }: { balance: number | string; }) {
   const { user } = useUser();
 
   const [balanceVisible, setBalanceVisible] = useState(true);
